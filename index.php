@@ -5,20 +5,26 @@ include_once 'scripts/database.php';
 include_once 'scripts/contato.php';
 
 $database = new Database();
-$db = $database->getConexao();
+$db = $database->getConnection();
 
 $contato = new Contato($db);
 
-if($_POST){
 
+if($_POST){
+ 
+    // set product property values
     $contato->nome = $_POST['nome'];
     $contato->telefone = $_POST['telefone'];
     $contato->email = $_POST['email'];
-
-    if($contato->inserir()){
-        echo "Contato inserido com sucesso";
-    }else{
-        echo "Erro ao inserir contato";
+     
+    // create the product
+    if($contato->create()){
+        echo "<div class='alert alert-success'>Product was created.</div>";
+    }
+ 
+    // if unable to create the product, tell the user
+    else{
+        echo "<div class='alert alert-danger'>Unable to create product.</div>";
     }
 }
 
@@ -52,5 +58,63 @@ if($_POST){
         </div>
     </div>
 </div>
+
+<?php 
+$stmt = $contato->realAll();
+$num = $stmt->rowCount();
+?>
+<h2 class="text-center">Lista de Contato</h2>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <?php 
+
+            if($num>0){
+
+                echo "<table class='table table-hover table-bordered'>";
+                    echo "<tr>";
+                        echo "<th>Nome</th>";
+                        echo "<th>Telefone</th>";
+                        echo "<th>Email</th>";
+                        echo "<th>Ação</th>";
+                    echo "</tr>";
+
+                    while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+                        extract($row);
+
+                        echo "<tr>";
+                            echo "<td>{$nome}</td>";
+                            echo "<td>{$telefone}</td>";
+                            echo "<td>{$email}</td>";
+                            echo "<td>";
+                            
+                            echo "
+                                <a href='exibir.php?id={$id}' class='btn btn-primary left-margin'>
+                                    <span class='glyphicon glyphicon-exibir'></span> Exibir
+                                </a>
+                                <a href='editar.php?id={$id}' class='btn btn-info left-margin'>
+                                    <span class='glyphicon glyphicon-edit'></span> Exibir
+                                </a>
+                                <a delete-id='{$id}' class='btn btn-danger delete-object'>
+                                    <span class='glyphicon glyphicon-remove'></span> Delete
+                                </a>";
+                            
+                            echo "</td>";
+                        echo "</tr>";
+
+                    }
+
+                echo "</table>";
+            
+            }else{
+                echo "<div class='alert alert-info'>Nenhum contato encontrado</div>";
+            }
+
+            ?>
+        </div>
+    </div>
+</div>
+
 
 <?php include_once 'footer.php'; ?>

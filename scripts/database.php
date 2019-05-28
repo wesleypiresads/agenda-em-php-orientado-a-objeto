@@ -1,27 +1,25 @@
-<?php 
-
+<?php
 class Database{
-
-	private $servidor = "localhost";
-	private $db_nome  = "agenda";
-	private $usuario  = "root";
-	private $senha    = "";
-	public  $conn;
-
-	public function getConexao(){
-
-		$this->conn = null;
-
-		try{
-
-			$this->conn = new PDO("mysql:servidor=" . $this->servidor . ";db_nome=" . $this->db_nome, $this->usuario, $this->senha);
-
-		}catch(PDOException $exception){
-			echo "Error na conexão: " .$exception->getMessage();
-		}
-
-		return $this->conn;
-	}
+  
+    // specify your own database credentials
+    private $host = "localhost";
+    private $db_name = "novaagenda";
+    private $username = "root";
+    private $password = "";
+    public $conn;
+  
+    // get the database connection
+    public function getConnection(){
+  
+        $this->conn = null;
+  
+        try{
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+        }catch(PDOException $exception){
+            echo "Connection error: " . $exception->getMessage();
+        }
+  
+        return $this->conn;
+    }
 }
-
 ?>
